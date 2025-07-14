@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+     <link rel="icon"  type="img/png" href="homepage.png">
+    <style>
+        h1{
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            color: #00fff7bb;
+            box:2px solid  #000;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            display: inline;
+            margin-right: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        b{
+             list-style-type: none;
+            padding: 0;
+            margin: 0;
+            color: #00fff7bb;
+            box:2px solid  #000;
+        }
+      .logout-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  margin: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #1f1f1f, #1f1f1f) padding-box,
+              linear-gradient(120deg, #00f6ff, #ff00f2, #00ff94, #ffcc00) border-box;
+  background-size: 200% 200%;
+  background-position: 0 0;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.logout-btn::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: -2px;
+  right: -2px; bottom: -2px;
+  background: linear-gradient(45deg, #00f6ff, #ff00f2, #00ff94, #ffcc00, #00f6ff);
+  background-size: 400% 400%;
+  animation: borderAnim 5s linear infinite;
+  z-index: -1;
+  border-radius: 12px;
+  filter: blur(5px);
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00f6ff, 0 0 20px #ff00f2;
+}
+
+.logout-btn span {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(90deg, #00f6ff, #ff00f2, #00ff94, #ffcc00);
+  animation: textGradientMove 3s linear infinite;
+  background-size: 300%;
+}
+
+@keyframes borderAnim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes textGradientMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+        .box-1 {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 10px;
+             background: #ffff24;
+            transition: transform 2s ease,background-color 2s ease 0s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .box-1:hover{
+            background-color: rgba(170, 180, 56, 0);
+        }
+        .btn-glow:hover {
+            color: #1ad639;
+            background-color: #0ac768;
+            border: 20px solid #0ac768;
+        }
+       
+        .box-2 span {
+            color: #000000;
+            font-weight: bold;
+        }
+        img{
+            width: 30px;
+         position: inline;
+        }
+        b{
+               padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        .box-2{
+              border: 10px solid ;
+              border-color: rgb(red, green, blue);
+            border-radius: 70px;
+            padding: 3px 20px;
+         
+            background-color: #2600ff;
+            box-shadow: -20px 4px 8px rgba(53, 42, 126, 0.54);
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .box-2:hover{
+            background-color: #3cff0000;
+            color: rgb(0, 255, 179);
+            transition: background-color 5s ease, color 5s ease;
+            border-radius: 70px;
+           border-color: #007BFF;
+           box-shadow: none;
+        }
+        body{
+   background-image: url('makka2.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: bottom;
+  background-size: cover;
+
+}
+    </style>
+</head>
+<body>
+   <a href="login.html" class="logout-btn">
+  <span>LOG IN</span>
+</a>
+
+
+    <nav class="box-1">
+        <ul>
+            <li class="btn-glow"><a href="IMAM.html">NOTS HISTORY</a></li>
+            <li class="btn-glow"><a href="Sufian.html"><del>Quran</del></a></li>
+            <li class="btn-glow"><a href="IslamiBooks.html"><del>Islamic Books</del></a></li>
+            <li class="btn-glow"><a href="noteapp.html">Note app</a></li>
+            <li class="btn-glow"><a href="contact.html">CONTACT</a></li>
+        </ul>
+    </nav>
+<br><hr>
+    <h1>ABOUT OF <span><img src="information.png" alt=""></span> </h1>
+    <hr>
+    <h1><big><b>THE SUFIAN KQITAB</b></big></h1>
+    <p><b>THIS IS OUR SUFIAN KQITAB</b></p>
+    <div class="box-2">
+    <H5><b>🌿 Suafian Kqitab: The Divine Script of Guidance
+Suafian Kqitab is the sacred scripture revealed by the Almighty Creator to His final Messenger, Muḥammad ﷺ, through the archangel Jibrīl (Gabriel). It is composed in a language of unparalleled eloquence and clarity — ancient ‘Arabiyyah — and serves as the eternal blueprint for human guidance, law, morality, and spirituality.
+
+🌟 Structure of Suafian Kqitab
+114 Chapters (Surahs) of varying lengths
+
+Each chapter comprises verses (Āyāt) that blend poetic rhythm with profound wisdom
+
+Topics range from theology, cosmology, history, law, ethics, spiritual purification, and the unseen world
+
+🕊️ The Message of Suafian Kqitab
+Tawḥīd: The oneness and absolute sovereignty of the Divine
+
+Nubuwwah: The role of Prophets as guides for humanity
+
+Ākhirah: A vivid portrayal of the afterlife — reward and punishment based on deeds
+
+Justice & Mercy: Commands social justice, compassion, charity, and moral discipline
+
+Remembrance: Calls the soul to reflect, return, and reconnect with its Divine origin
+
+🔥 Miraculous Nature of Suafian Kqitab
+Inimitable Eloquence: No human or jinn has been able to produce a work like it
+
+Prophecies Fulfilled: Speaks of future events, many of which have already come to pass
+
+Scientific Hints: Touches on the creation of life, cosmos, and natural phenomena in ways that align with modern discovery
+
+Unchanged Text: Preserved word-for-word for over 14 centuries — memorized by millions
+
+📿 Spiritual Power of Suafian Kqitab
+Reciting it brings peace to the heart
+
+Listening to it humbles the soul
+
+Reflecting on it purifies the mind
+
+Living by it transforms lives
+
+🌙 Revealed Over 23 Years
+In the sacred lands of Makkah and Madīnah, in moments of hardship and ease
+
+Often in direct response to events, questions, and conditions of the Prophet’s time
+
+🌍 Universal in Message, Local in Revelation
+Though it descended in 7th-century Arabia, the Suafian Kqitab speaks to all humanity, across time and space, as the Final Testament from the Divine.</b></H5></div>
+<div class="bx-1">
+    <h5>saffat</h5>
+</div>
+
+<style>
+    .bx-1{
+        border: 2px solid;
+        background: black;
+        border-radius: 15px;
+        content: "";
+        position: absolute;
+        z-index: 1;
+        animation: spin 2s linear infinite;
+        filter: blur(50px);
+    }
+</style>
+
+
+</body>
+</html>

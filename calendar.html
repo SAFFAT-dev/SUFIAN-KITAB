@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Calendar Alarm</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .calendar {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .clock {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #00ffcc;
+      font-weight: bold;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    select {
+      padding: 5px;
+      border-radius: 6px;
+      background: #333;
+      color: #fff;
+      border: none;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .day-name {
+      text-align: center;
+      font-weight: bold;
+      color: #aaa;
+    }
+
+    .day {
+      text-align: center;
+      padding: 10px;
+      background: #2a2a2a;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .day:hover {
+      background: #444;
+    }
+
+    .today {
+      background: #007BFF;
+      color: #fff;
+    }
+
+    .note-marker {
+      width: 8px;
+      height: 8px;
+      background: yellow;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+    }
+
+    .note-popup {
+      position: fixed;
+      background: #1e1e1e;
+      border: 1px solid #555;
+      padding: 15px;
+      border-radius: 8px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      z-index: 1000;
+      width: 300px;
+    }
+
+    .note-popup textarea {
+      width: 100%;
+      height: 100px;
+      padding: 5px;
+      background: #2a2a2a;
+      color: #fff;
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .note-popup button {
+      background: #007bff;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar">
+    <div class="clock" id="clock">Loading time...</div>
+    <header>
+      <select id="monthSelect"></select>
+      <select id="yearSelect"></select>
+    </header>
+    <div class="days" id="daysContainer"></div>
+  </div>
+
+  <div class="note-popup" id="notePopup">
+    <h3 style="margin-bottom:10px;">Note for <span id="noteDateLabel"></span></h3>
+    <textarea id="noteInput"></textarea>
+    <div style="text-align:right">
+      <button onclick="saveNote()">💾 Save</button>
+    </div>
+  </div>
+
+  <!-- 🔊 Beep Audio -->
+  <audio id="alarmSound">
+    <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const clock = document.getElementById("clock");
+    const daysContainer = document.getElementById("daysContainer");
+    const monthSelect = document.getElementById("monthSelect");
+    const yearSelect = document.getElementById("yearSelect");
+    const notePopup = document.getElementById("notePopup");
+    const noteInput = document.getElementById("noteInput");
+    const noteDateLabel = document.getElementById("noteDateLabel");
+    const alarmSound = document.getElementById("alarmSound");
+
+    let selectedDate = new Date();
+    let activeNoteDate = '';
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    function updateClock() {
+      const now = new Date();
+      let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      clock.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${ampm}`;
+      checkAlarm(now);
+    }
+
+    function initSelectors() {
+      months.forEach((month, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+      });
+
+      for (let y = 0; y <= 3000; y++) {
+        const option = document.createElement("option");
+        option.value = y;
+        option.textContent = y;
+        yearSelect.appendChild(option);
+      }
+
+      monthSelect.value = selectedDate.getMonth();
+      yearSelect.value = selectedDate.getFullYear();
+
+      monthSelect.addEventListener("change", () => {
+        selectedDate.setMonth(monthSelect.value);
+        renderCalendar();
+      });
+
+      yearSelect.addEventListener("change", () => {
+        selectedDate.setFullYear(yearSelect.value);
+        renderCalendar();
+      });
+    }
+
+    function renderCalendar() {
+      const year = selectedDate.getFullYear();
+      const month = selectedDate.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      daysContainer.innerHTML = "";
+
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      for (let name of dayNames) {
+        const div = document.createElement("div");
+        div.textContent = name;
+        div.classList.add("day-name");
+        daysContainer.appendChild(div);
+      }
+
+      for (let i = 0; i < firstDay; i++) {
+        daysContainer.appendChild(document.createElement("div"));
+      }
+
+      for (let day = 1; day <= lastDate; day++) {
+        const div = document.createElement("div");
+        div.textContent = day;
+        div.classList.add("day");
+
+        const dateKey = `${year}-${month + 1}-${day}`;
+        if (localStorage.getItem(`note-${dateKey}`)) {
+          const dot = document.createElement("div");
+          dot.classList.add("note-marker");
+          div.appendChild(dot);
+        }
+
+        if (
+          day === today.getDate() &&
+          month === today.getMonth() &&
+          year === today.getFullYear()
+        ) {
+          div.classList.add("today");
+        }
+
+        div.onclick = () => openNotePopup(dateKey, day, month, year);
+        daysContainer.appendChild(div);
+      }
+    }
+
+    function openNotePopup(dateKey, day, month, year) {
+      activeNoteDate = dateKey;
+      noteDateLabel.textContent = `${day} ${months[month]} ${year}`;
+      noteInput.value = localStorage.getItem(`note-${dateKey}`) || "";
+      notePopup.style.display = "block";
+    }
+
+    function saveNote() {
+      if (noteInput.value.trim()) {
+        localStorage.setItem(`note-${activeNoteDate}`, noteInput.value.trim());
+      } else {
+        localStorage.removeItem(`note-${activeNoteDate}`);
+      }
+      notePopup.style.display = "none";
+      renderCalendar();
+    }
+
+    function checkAlarm(now) {
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+      const alreadyNotified = localStorage.getItem(`notified-${todayKey}`);
+
+      if (h === 6 && m === 0 && !alreadyNotified && localStorage.getItem(`note-${todayKey}`)) {
+        showNotification(`🔔 Reminder: ${localStorage.getItem(`note-${todayKey}`)}`);
+        alarmSound.play();
+        localStorage.setItem(`notified-${todayKey}`, "true");
+      }
+    }
+
+    function showNotification(msg) {
+      if (Notification.permission === "granted") {
+        new Notification("📅 Calendar Reminder", { body: msg });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification("📅 Calendar Reminder", { body: msg });
+          }
+        });
+      }
+    }
+
+    document.addEventListener("click", e => {
+      if (e.target === notePopup) {
+        notePopup.style.display = "none";
+      }
+    });
+
+    setInterval(updateClock, 1000);
+    updateClock();
+    initSelectors();
+    renderCalendar();
+  </script>
+  <a href="profile.html"><button>Go to Profile</button></a>
+</body>
+</html>
